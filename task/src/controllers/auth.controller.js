@@ -12,11 +12,7 @@ exports.register = async (req, res, next) => {
     }).lean();
 
     if (duplicateUserName) {
-      throw new CustomError(
-        "User Name is already Registered",
-        errorCodes.BAD_REQUEST,
-        400
-      );
+      throw new CustomError("User Name is already Registered", errorCodes.BAD_REQUEST, 400);
     }
 
     const getUser = await UserModel.create(req.body);
@@ -39,7 +35,9 @@ exports.login = async (req, res, next) => {
       throw new CustomError("Invalid Credentials", errorCodes.BAD_REQUEST, 400);
     }
 
-    const _token = jwt.sign({ _id: userRecord._id }, process.env.JWT_SECRET);
+    const _token = jwt.sign({ _id: userRecord._id }, process.env.JWT_SECRET, {
+      expiresIn: "12h"
+    });
 
     return responseHandler(res, 200, "LoggedIn!", {
       token: _token
