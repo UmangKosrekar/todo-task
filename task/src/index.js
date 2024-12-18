@@ -6,6 +6,7 @@ const app = express();
 const swaggerSpecs = require("./swagger");
 
 // middlewares
+app.use(require("./helper").rateLimiter);
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 app.use(require("morgan")("dev"));
