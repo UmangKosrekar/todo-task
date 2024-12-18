@@ -13,11 +13,7 @@ exports.createTodo = async (req, res, next) => {
     }
     const checkUser = await UserModel.findOne({ _id: assignedTo }).lean();
     if (!checkUser?.role === userEnum.role.USER) {
-      throw new CustomError(
-        "Please Select Valid User",
-        errorCodes.BAD_REQUEST,
-        400
-      );
+      throw new CustomError("Please Select Valid User", errorCodes.BAD_REQUEST, 400);
     }
 
     const createdTask = await TodoModel.create(req.body);
@@ -91,13 +87,12 @@ exports.listTodo = async (req, res, next) => {
 exports.updateTodo = async (req, res, next) => {
   try {
     const { id } = req.params;
-    const condition = { _id: id };
-    if (req.user.role === userEnum.role.USER) {
-      condition.userId = req.user._id;
-    }
-    const updatedData = await TodoModel.updateOne(condition, {
-      $set: req.body
-    });
+    const updatedData = await TodoModel.updateOne(
+      { _id: id, userId: req.user._id },
+      {
+        $set: req.body
+      }
+    );
 
     if (!updatedData.matchedCount) {
       throw new CustomError("Todo Not Found", errorCodes.BAD_REQUEST, 400);
@@ -121,6 +116,17 @@ exports.deleteTodo = async (req, res, next) => {
     }
 
     return responseHandler(res, 200, "Confirmation of todo deletion");
+  } catch (error) {
+    console.trace(error);
+    next(error);
+  }
+};
+
+exports.userList = async (req, res, next) => {
+  try {
+    const list = await UserModel.find({ role: userEnum.role.USER }).lean();
+
+    return responseHandler(res, 200, undefined, list);
   } catch (error) {
     console.trace(error);
     next(error);
