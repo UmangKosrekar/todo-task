@@ -28,13 +28,16 @@ This project is intended as a showcase of my skills, including task management, 
 
 ## Installation
 
-1. Clone the repository:
-   ```bash
-   git clone https://github.com/UmangKosrekar/todo-task.git
-   cd task
-   npm i
-   npm run start
-   ```
+```bash
+git clone https://github.com/UmangKosrekar/todo-task.git
+cd task
+npm i
+npm run start
+```
+
+## Documentation
+
+- Visit `/api-docs` to view the API documentation
 
 ### Note
 
