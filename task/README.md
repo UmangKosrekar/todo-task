@@ -1,21 +1,47 @@
-# Node.js To-Do Application
+# Todo Project
 
-A scalable RESTful API for managing a to-do list with user authentication and CI/CD deployment.
+## Description
+
+This is a simple Todo application that demonstrates key skills in backend development using MongoDB, Express, Joi, and Swagger. It features two types of users:
+
+- **Admin**: Can assign tasks to users.
+- **User**: Can view and complete assigned tasks.
+
+This project is intended as a showcase of my skills, including task management, API validation, database aggregation, and documentation.
 
 ## Features
-- **JWT Authentication** with role-based access control.
-- **CRUD Operations** for to-do items (including pagination, filtering, and sorting).
-- **Rate limiting** and input sanitization middleware.
-- **CI/CD Pipeline** with GitHub Actions to deploy on AWS Elastic Beanstalk.
 
-## Setup Instructions
-1. Clone the repository.
-2. Run `npm install` to install dependencies.
-3. Configure MongoDB connection in `config/db.js`.
-4. Run `npm start` to launch the API.
+- Admin authentication and task assignment
+- User authentication and task completion
+- Task listing and status updates
+- Database aggregation for task status summaries
+- API validation using Joi
+- Interactive API documentation with Swagger
 
-## CI/CD Pipeline
-1. Add AWS credentials (`AWS_ACCESS_KEY_ID`, `AWS_SECRET_ACCESS_KEY`) and environment settings to GitHub secrets.
-2. Push code to the `master` branch to trigger the pipeline.
+## Technologies Used
 
----
+- **MongoDB**: NoSQL database
+- **Express**: RESTful API
+- **Joi**: Input Sanitization
+- **Swagger**: API documentation
+- **Mongoose**: ODM to interact with MongoDB
+
+## Installation
+
+1. Clone the repository:
+   ```bash
+   git clone https://github.com/UmangKosrekar/todo-task.git
+   cd task
+   npm i
+   npm run start
+   ```
+
+### Note
+
+- Have used ChatGPT to make this README file.
+
+## Contact Us 📧
+
+[![LinkedIn](https://img.shields.io/badge/LinkedIn-0077B5?style=for-the-badge&logo=linkedin&logoColor=white)](https://www.linkedin.com/in/umang-kosrekar/)
+
+[![Gmail](https://img.shields.io/badge/Gmail-D14836?style=for-the-badge&logo=gmail&logoColor=white)](mailto:ukosrekar@gmail.com)
