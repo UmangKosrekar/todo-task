@@ -4,16 +4,7 @@ const { todoEnum } = require("../../constants/enum");
 exports.createTodoValidation = joi
   .object({
     title: joi.string().required(),
-    description: joi.string().email(),
+    description: joi.string().allow(""),
     userId: joi.string().required()
-  })
-  .required();
-
-exports.updateTodoValidation = joi
-  .object({
-    status: joi
-      .string()
-      .required()
-      .valid(...Object.values(todoEnum.status))
   })
   .required();

@@ -1,0 +1,131 @@
+openapi: 3.0.0
+info:
+  title: Todo API
+  version: 1.0.0
+paths:
+  /api/v1/todo:
+    post:
+      summary: Create a todo
+      tags:
+        - Todo
+      parameters:
+        - name: token
+          in: header
+          required: true
+          description: Authentication token.
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                title:
+                  type: string
+                  description: Title of the todo.
+                description:
+                  type: string
+                  description: Optional
+                userId:
+                  type: string
+                  description: ObjectId of the user to whom the task is assigned.
+              example:
+                title: Finish Swagger Documentation
+                description: Create Swagger documentation for todo API
+                status: pending
+                userId: 64212abc1234ef567890abcd
+      responses:
+        "201":
+          description: Todo created successfully.
+    get:
+      summary: List todos
+      tags:
+        - Todo
+      parameters:
+        - name: token
+          in: header
+          required: true
+          description: Authentication token.
+          schema:
+            type: string
+        - name: page
+          in: query
+          schema:
+            type: integer
+        - name: limit
+          in: query
+          schema:
+            type: integer
+        - name: search
+          in: query
+          schema:
+            type: string
+        - name: statusFilter
+          in: query
+          schema:
+            type: string
+        - name: desc
+          in: query
+          schema:
+            type: boolean
+      responses:
+        "200":
+          description: Paginated list of todos.
+
+  /api/v1/todo/{id}:
+    patch:
+      summary: Update a todo
+      tags:
+        - Todo
+      parameters:
+        - name: token
+          in: header
+          required: true
+          description: Authentication token.
+          schema:
+            type: string
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Todo updated successfully.
+    delete:
+      summary: Delete a todo
+      tags:
+        - Todo
+      parameters:
+        - name: token
+          in: header
+          required: true
+          description: Authentication token.
+          schema:
+            type: string
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Todo deleted successfully.
+
+  /api/v1/todo/user-list:
+    get:
+      summary: List users with a "user" role
+      tags:
+        - User
+      parameters:
+        - name: token
+          in: header
+          required: true
+          description: Authentication token.
+          schema:
+            type: string
+      responses:
+        "200":
+          description: List of users.

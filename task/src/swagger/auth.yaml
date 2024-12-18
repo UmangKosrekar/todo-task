@@ -1,0 +1,112 @@
+openapi: 3.0.0
+info:
+  title: Authentication API
+  description: API for user authentication including registration and login.
+  version: 1.0.0
+paths:
+  /api/v1/auth/register:
+    post:
+      summary: Register user / admin
+      tags:
+        - Auth
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                userName:
+                  type: string
+                  description: Unique username for the user.
+                password:
+                  type: string
+                  description: Password for the user.
+                role:
+                  type: string
+                  enum: [user, admin]
+                  description: Role of a user
+            example:
+              userName: geet
+              password: Geet@321
+              role: user
+      responses:
+        "201":
+          description: Registered!
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: boolean
+                  message:
+                    type: string
+                  data:
+                    type: object
+                    properties:
+                      _id:
+                        type: string
+        "400":
+          description: If username is already taken
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: boolean
+                  message:
+                    type: string
+                  errorCode:
+                    type: string
+
+  /api/v1/auth/login:
+    post:
+      summary: Log in an existing user
+      tags:
+        - Auth
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                userName:
+                  type: string
+                password:
+                  type: string
+            example:
+              userName: geet
+              password: Geet@321
+      responses:
+        "200":
+          description: LoggedIn
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: boolean
+                  message:
+                    type: string
+                  data:
+                    type: object
+                    properties:
+                      token:
+                        type: string
+        "400":
+          description: Invalid Credentials
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: boolean
+                  message:
+                    type: string
+                  errorCode:
+                    type: string

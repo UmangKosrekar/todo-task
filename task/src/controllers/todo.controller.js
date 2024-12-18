@@ -1,19 +1,33 @@
-const { errorCodes, userEnum } = require("../constants/enum");
+const { errorCodes, userEnum, todoEnum } = require("../constants/enum");
 const { responseHandler, CustomError } = require("../helper");
 const { TodoModel, UserModel } = require("../model");
 
+/**
+ * Create New Todo
+ *
+ * @route POST /api/v1/todo
+ * @param {import("express").Request} req
+ * @param {import("express").Response} res
+ * @param {import("express").NextFunction} next
+ * @throws {CustomError}
+ */
 exports.createTodo = async (req, res, next) => {
   try {
-    const { title, assignedTo } = req.body;
+    const { title, userId } = req.body;
 
     const titleAlreadyUsed = await TodoModel.countDocuments({ title }).lean();
 
     if (titleAlreadyUsed) {
       throw new CustomError("Select Unique Title", errorCodes.BAD_REQUEST, 400);
     }
-    const checkUser = await UserModel.findOne({ _id: assignedTo }).lean();
-    if (!checkUser?.role === userEnum.role.USER) {
-      throw new CustomError("Please Select Valid User", errorCodes.BAD_REQUEST, 400);
+    const checkUser = await UserModel.findOne({ _id: userId }).lean();
+    console.log("checkUser", checkUser);
+    if (!checkUser || checkUser.role === userEnum.role.USER) {
+      throw new CustomError(
+        "Please Select Valid User",
+        errorCodes.BAD_REQUEST,
+        400
+      );
     }
 
     const createdTask = await TodoModel.create(req.body);
@@ -25,14 +39,30 @@ exports.createTodo = async (req, res, next) => {
   }
 };
 
+/**
+ * Paginated list of Todo
+ *
+ * @route GET /api/v1/todo
+ * @param {import("express").Request} req
+ * @param {import("express").Response} res
+ * @param {import("express").NextFunction} next
+ * @throws {CustomError}
+ */
 exports.listTodo = async (req, res, next) => {
   try {
-    const { page, limit, key, desc, search, statusFilter } = req.query;
+    const {
+      page = 1,
+      limit = 25,
+      key = "_id",
+      desc = false,
+      search,
+      statusFilter
+    } = req.query;
 
     const paginationQuery = [
-      { $sort: { [key || "_id"]: desc ? -1 : 1 } },
-      { $skip: ((Number(page) || 1) - 1) * (Number(limit) || 25) },
-      { $limit: Number(limit) || 25 }
+      { $sort: { [key]: desc === "true" ? -1 : 1 } },
+      { $skip: (Number(page) - 1) * Number(limit) },
+      { $limit: Number(limit) }
     ];
 
     const condition = {};
@@ -84,13 +114,22 @@ exports.listTodo = async (req, res, next) => {
   }
 };
 
+/**
+ * Update Status
+ *
+ * @route PATCH /api/v1/todo/:id
+ * @param {import("express").Request} req
+ * @param {import("express").Response} res
+ * @param {import("express").NextFunction} next
+ * @throws {CustomError}
+ */
 exports.updateTodo = async (req, res, next) => {
   try {
     const { id } = req.params;
     const updatedData = await TodoModel.updateOne(
       { _id: id, userId: req.user._id },
       {
-        $set: req.body
+        $set: { status: todoEnum.status.COMPLETED }
       }
     );
 
@@ -105,6 +144,14 @@ exports.updateTodo = async (req, res, next) => {
   }
 };
 
+/**
+ * Deletes a Todo
+ *
+ * @route DELETE /api/v1/todo/:id
+ * @param {import("express").Request} req
+ * @param {import("express").Response} res
+ * @param {Function} next
+ */
 exports.deleteTodo = async (req, res, next) => {
   try {
     const { id } = req.params;
@@ -122,9 +169,20 @@ exports.deleteTodo = async (req, res, next) => {
   }
 };
 
+/**
+ * Get list of only user
+ *
+ * @route GET /api/v1/todo/user-list
+ * @param {import("express").Request} req
+ * @param {import("express").Response} res
+ * @param {Function} next
+ */
 exports.userList = async (req, res, next) => {
   try {
-    const list = await UserModel.find({ role: userEnum.role.USER }).lean();
+    const list = await UserModel.find(
+      { role: userEnum.role.USER },
+      { _id: 0, userId: "$_id", userName: 1 }
+    ).lean();
 
     return responseHandler(res, 200, undefined, list);
   } catch (error) {
