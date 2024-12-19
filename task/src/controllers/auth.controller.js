@@ -4,26 +4,13 @@ const { responseHandler, CustomError } = require("../helper");
 const { UserModel } = require("../model");
 
 /**
- * @typedef {Object} RegisterRequestBody
- * @property {string} userName - Unique username of the user.
- * @property {string} password - Password of the user.
- * @property {string} [email] - Optional email address of the user.
- */
-
-/**
- * @typedef {Object} LoginRequestBody
- * @property {string} userName - Username of the user.
- * @property {string} password - Password of the user.
- */
-
-/**
  * Registers a new user.
  *
  * @route POST /api/v1/auth/register
- * @param {import("express").Request} req - Express request object.
- * @param {import("express").Response} res - Express response object.
- * @param {import("express").NextFunction} next - Express next middleware function.
- * @throws {CustomError} If the username is already registered.
+ * @param {import("express").Request} req
+ * @param {import("express").Response} res
+ * @param {import("express").NextFunction} next
+ * @throws {CustomError}
  */
 exports.register = async (req, res, next) => {
   try {
@@ -34,11 +21,7 @@ exports.register = async (req, res, next) => {
     }).lean();
 
     if (duplicateUserName) {
-      throw new CustomError(
-        "User Name is already Registered",
-        errorCodes.BAD_REQUEST,
-        400
-      );
+      throw new CustomError("User Name is already Registered", errorCodes.BAD_REQUEST, 400);
     }
 
     const getUser = await UserModel.create(req.body);
